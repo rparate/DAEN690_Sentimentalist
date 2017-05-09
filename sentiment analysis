@@ -80,6 +80,19 @@ Dataset <- tweet_trump
 Dataset$text <- as.factor(Dataset$text)
 Dataset$source <- tweet_trump$source
 scores <- score.sentiment(Dataset$text, pos.words, neg.words, .progress='text')
+#Tweets By source
+tweet_trump$statusSource <- gsub("<.*?>", "",tweet_trump$statusSource)                                                                                                                                                                                                                                                                                                                                                            
+tweets <- tweet_trump %>%
+  select(text,created_at,user.id,statusSource) %>%
+  extract(statusSource, "source", "Twitter for (.*?)<") %>%
+  filter(source %in% c("iPhone", "Android"))
+tweets %>%
+  count(source, hour = as.Date(hour(with_tz(created_at, "EST")))) %>%
+  mutate(percent = n / sum(n)) %>%
+  ggplot(aes(hour, percent, color = statusSource)) +
+  geom_line() +
+  scale_y_continuous(labels = percent_format()) +
+  labs(x = "Hour of day (EST)",
+       y = "% of tweets",
+       color = "")
 
-#save evaluation results into the file
-write.csv(scores,file = 'trump_scores_count.csv', row.names=TRUE)
