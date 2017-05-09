@@ -1,0 +1,181 @@
+#################
+Team Sentimentalist - DAEN690
+#################
+
+#### Packages #####
+# Dplyr: for data selection
+install.packages("dplyr")
+library(dplyr)
+# Box-Cox for data transformation
+install.packages("MASS")
+library(MASS)
+
+#### Visualization ####
+# Time series Plots
+par(mfrow=c(3,2))
+plot.ts(Dow2012$Adj.Close, main = "Dow Jones 2012")
+plot.ts(Dow2016$Adj.Close, main = "Dow Jones 2016")
+plot.ts(Nasdaq2012$Adj.Close, main = "Nasdaq 2012")
+plot.ts(Nasdaq2016$Adj.Close, main = "Nasdaq 2016")
+plot.ts(SnP2012$Adj.Close, main = "SnP 2012")
+plot.ts(SnP2016$Adj.Close, main = "SnP 2016")
+plot.ts(SnP2016_sub$Adj.Close)
+# Box-Plots : Convert to ggplot
+par(mfrow = c(1,2))
+
+# Dow Jones Comparison
+boxplot(Dow2012$Adj.Close)
+boxplot(Dow2016$Adj.Close)
+
+boxplot(Nasdaq2012$Adj.Close)
+boxplot(Nasdaq2016$Adj.Close)
+boxplot(SnP2012$Adj.Close)
+boxplot(SnP2016$Adj.Close)
+
+#### Dow 2012 ####
+Dow2012_sub <- read.csv("C:\\Users\\Pooja\\Desktop\\stocks data\\Dow 2012.csv", header = TRUE)
+head(Dow2012)
+Dow2012_sub <- dplyr::select(Dow2012,Date, Adj.Close)
+plot.ts(Dow2012_sub$Adj.Close)
+
+# Measures of central tendency and variation.
+summary(Dow2012_sub$Adj.Close)
+sd(Dow2012_sub$Adj.Close)
+min(Dow2012_sub$Adj.Close) # Low
+max(Dow2012_sub$Adj.Close) # high
+
+# Stock performance with respect to average
+AverageDow2012_sub <- (Dow2012_sub$Low + Dow2012_sub$High)/2
+StatusDow2012_sub <- NULL
+i<- NULL
+for( i in 1: nrow(Dow2012_sub))
+{
+  StatusDow2012_sub[i]<- ifelse(Dow2012_sub$Adj.Close[i] >= AverageDow2012_sub[i],"High", "Low")  
+}
+table(StatusDow2012_sub)
+
+
+#### Dow 2016 : With Trump ####
+Dow2016<- read.csv("C:\\Users\\Pooja\\Desktop\\stocks data\\DowJones Trump election.csv", header = TRUE)
+head(Dow2016)
+Dow2016 <- dplyr::select(Dow2016,Date, Adj.Close)
+plot.ts(Dow2016$Adj.Close)
+
+# Measures of central tendency and variation.
+summary(Dow2016$Adj.Close)
+sd(Dow2016$Adj.Close)
+min(Dow2016$Adj.Close) # Low
+max(Dow2016$Adj.Close) # high
+
+# Stock performance with respect to average
+AverageDow2016 <- (Dow2016$Low + Dow2016$High)/2
+StatusDow2016 <- NULL
+i<- NULL
+for( i in 1: nrow(Dow2016))
+{
+  StatusDow2016[i]<- ifelse(Dow2016$Close[i] >= AverageDow2016[i],"High", "Low")  
+}
+table(StatusDow2016)
+
+#### Nasdaq 2012 ####
+Nasdaq2012<- read.csv("C:\\Users\\Pooja\\Desktop\\stocks data\\Nasdaq 2012.csv", header = TRUE)
+head(Nasdaq2012)
+Nasdaq2012_sub <- dplyr::select(Nasdaq2012,Date, Adj.Close)
+plot.ts(Nasdaq2012_sub$Adj.Close)
+
+# Measures of central tendency and variation.
+summary(Nasdaq2012_sub$Adj.Close)
+sd(Nasdaq2012_sub$Adj.Close)
+min(Nasdaq2012_sub$Adj.Close) # Low
+max(Nasdaq2012_sub$Adj.Close) # high
+
+# Stock performance with respect to average
+AverageNasdaq2012 <- (Nasdaq2012$Low + Nasdaq2012$High)/2
+StatusNasdaq2012 <- NULL
+i<- NULL
+for( i in 1: nrow(Nasdaq2012))
+{
+  StatusNasdaq2012[i]<- ifelse(Nasdaq2012$Close[i] >= AverageNasdaq2012[i],"High", "Low")  
+}
+table(StatusNasdaq2012)
+
+#### Nasdaq 2016 : with Trump
+
+Nasdaq2016<- read.csv("C:\\Users\\Pooja\\Desktop\\stocks data\\Nasdaq Trump election.csv", header = TRUE)
+head(Nasdaq2016)
+Nasdaq2016_sub <- dplyr::select(Nasdaq2016,Date, Adj.Close)
+plot.ts(Nasdaq2016_sub$Adj.Close)
+
+# Measures of central tendency and variation.
+summary(Nasdaq2016_sub$Adj.Close)
+sd(Nasdaq2016_sub$Adj.Close)
+min(Nasdaq2016_sub$Adj.Close) # Low
+max(Nasdaq2016_sub$Adj.Close) # high
+
+AverageNasdaq2016 <- (Nasdaq2016$Low + Nasdaq2016$High)/2
+StatusNasdaq2016 <- NULL
+i<- NULL
+for( i in 1: nrow(Nasdaq2016))
+{
+  StatusNasdaq2016[i]<- ifelse(Nasdaq2016$Close[i] >= AverageNasdaq2016[i],"High", "Low")  
+}
+table(StatusNasdaq2016)
+
+#### SnP 2012 ####
+SnP2012<- read.csv("C:\\Users\\Pooja\\Desktop\\stocks data\\S nP 2012.csv", header = TRUE)
+head(SnP2012)
+SnP2012_sub <- dplyr::select(SnP2012,Date, Adj.Close)
+plot.ts(SnP2012_sub$Adj.Close)
+
+# Measures of central tendency and variation.
+summary(SnP2012_sub$Adj.Close)
+sd(SnP2012_sub$Adj.Close)
+min(SnP2012_sub$Adj.Close) # Low
+max(SnP2012_sub$Adj.Close) # high
+
+# Stock performance with respect to average
+AverageSnP2012 <- (SnP2012$Low + SnP2012$High)/2
+StatusSnP2012 <- NULL
+i<- NULL
+for( i in 1: nrow(SnP2012))
+{
+  StatusSnP2012[i]<- ifelse(SnP2012$Close[i] >= AverageSnP2012[i],"High", "Low")  
+}
+table(StatusSnP2012)
+
+#### SnP 2016 : with Trump####
+SnP2016<- read.csv("C:\\Users\\Pooja\\Desktop\\stocks data\\S&P Trump election.csv", header = TRUE)
+head(SnP2016)
+SnP2016_sub <- dplyr::select(SnP2016,Date, Adj.Close)
+plot.ts(SnP2016_sub$Adj.Close)
+
+# Measures of central tendency and variation.
+summary(SnP2016_sub$Adj.Close)
+sd(SnP2016_sub$Adj.Close)
+min(SnP2016_sub$Adj.Close) # Low
+max(SnP2016_sub$Adj.Close) # high
+
+# Stock performance with respect to average
+AverageSnP2016 <- (SnP2016$Low + SnP2016$High)/2
+StatusSnP2016 <- NULL
+i<- NULL
+for( i in 1: nrow(SnP2016))
+{
+  StatusSnP2016[i]<- ifelse(SnP2016$Close[i] >= AverageSnP2016[i],"High", "Low")  
+}
+table(StatusSnP2016)
+
+#### Box-Cox Transformation : For normalization , standardization ####
+#### Boxplot ####
+par(mfrow = c(1,2))
+# Dow Jones Comparison
+boxplot(Dow2012$Adj.Close, main = "Dow Jones 2012", ylab = "Stock Prices")
+boxplot(Dow2016$Adj.Close, main = "Dow Jones 2016", ylab = "Stock Prices")
+boxplot(Nasdaq2012$Adj.Close, main = "Nasdaq 2012", ylab = "Stock Prices")
+boxplot(Nasdaq2016$Adj.Close, main = "Nasdaq 2016", ylab = "Stock Prices")
+boxplot(SnP2012$Adj.Close, main = "S&P 2012", ylab = "Stock Prices")
+boxplot(SnP2016$Adj.Close, main = "S&P 2016", ylab = "Stock Prices")
+
+###########
+End Of File
+###########
