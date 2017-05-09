@@ -1,0 +1,138 @@
+##################
+Team Sentimentalist - DAEN 690
+###################
+
+#### Sentiment Analysis 
+library(twitteR)
+library(ROAuth)
+library(httr)
+library(base64enc)
+library(httpuv)
+library(plyr)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(tidytext)
+library(lubridate)
+library(stringr)
+library(ggraph)
+library(igraph)
+
+feed_trump <- read.csv("Trump_tableau_tweets.csv",header = T)
+
+# Read in dictionary of positive and negative works
+pos = scan('positive-words.txt',what='character', comment.char=';')
+neg = scan('negative-words.txt',what='character', comment.char=';')
+# Add a few twitter-specific negative phrases
+pos.words = c(pos, 'upgrade', ':)', '#iVoted', 'voted')
+neg.words = c(neg, 'wtf', 'epicfail', 'douchebag')
+######### Function Starts ###########
+score.sentiment = function(sentences, good_text, bad_text, .progress='none')
+{
+  require(plyr)
+  require(stringr)
+  # we got a vector of sentences. plyr will handle a list
+  # or a vector as an "l" for us
+  # we want a simple array of scores back, so we use
+  # "l" + "a" + "ply" = "laply":
+  scores = laply(sentences, function(sentence, good_text, bad_text) 
+  {
+    
+    # clean up sentences with R's regex-driven global substitute, gsub():
+    #removing Retweets
+    sentence = gsub("(RT|via)((?:\\b\\W*@\\w+)+)","",sentence)
+    sentence = gsub("&amp","",sentence)
+    
+    #let's clean html links
+    sentence = gsub("http[^[:blank:]]+","",sentence)
+    
+    #let's remove people names
+    sentence = gsub("@\\w+","",sentence)
+   
+    #let's remove number (alphanumeric)
+    sentence = gsub("[ \t]{2,}", "", sentence)
+    sentence = gsub("^\\s+|\\s+$", "", sentence)
+    #sentence = gsub("½"," ",sentence)
+    
+    sentence = gsub("[^[:alnum:]]"," ",sentence)
+    sentence = gsub('[[:punct:]]', '', sentence)
+    sentence = gsub('[[:cntrl:]]', '', sentence)
+    sentence = gsub('\\d+', '', sentence)
+    sentence = str_replace_all(sentence,"RT @[a-z,A-Z]*: ","")
+           
+    # split into words. str_split is in the stringr package
+    word.list = str_split(sentence, '\\s+')
+    # sometimes a list() is one level of hierarchy too much
+    words = unlist(word.list)
+    
+    # compare our words to the dictionaries of positive & negative terms
+    pos.matches = match(words, good_text)
+    neg.matches = match(words, bad_text)
+    return(score)
+  }, good_text, bad_text, .progress=.progress )
+  
+  scores.df = data.frame(score=scores, text=sentences)
+  return(scores.df)
+}
+########## Function Ends #################
+
+Dataset <- tweet_trump
+Dataset$text <- as.factor(Dataset$text)
+Dataset$source <- tweet_trump$source
+scores <- score.sentiment(Dataset$text, pos.words, neg.words, .progress='text')
+
+#Device used
+words_trump_clean$statusSource <- gsub("<.*?>", "",words_trump_clean$statusSource)
+trump_source <- words_trump_clean %>% 
+  group_by(X,statusSource) %>% 
+  summarise(n=n()) %>%
+  group_by(statusSource) %>% 
+  summarise(n=n()) %>% 
+  mutate(n=(n/sum(n))*100) %>% 
+  mutate(statusSource=ifelse(n<10,"Other Sources",statusSource)) %>% 
+  group_by(statusSource)%>% summarise(n=sum(n)) %>% mutate(type="Trump Election Tweets")
+
+#Composition of sentiments for each tweet set using NRC dictionary
+nrc <- get_sentiments("nrc")
+words_trump_clean_sent <- words_trump_clean %>% 
+  inner_join(nrc,by="word") %>% mutate(type="Trump Election Day")
+words_trump_clean_sent %>% group_by(type,sentiment) %>% summarise(n=n()) %>% mutate(n=n/sum(n)) %>%
+  ggplot(aes(x=type, y=n*100, fill=sentiment)) +
+  geom_bar(stat="identity", position="dodge")+theme_minimal()+ylab("%")+
+  ggtitle("Percentage Sentiment for each case")+theme(plot.title = element_text(hjust = 0.5))+
+  xlab("Tweets")+scale_fill_manual(values = c("#24576D","#A113E2",
+                                              "#000000","gray" ,
+                                              "#28AADC",
+                                              "#F2583F","#40cc49",                    
+                                              "#96503F","#ffc100","#918d58"))            
+                                            
+                                                                   
+
+#2012 Presidential election Tweets"#D91460"
+ing =read.csv("inauguration_obama.csv",header = T)
+lex_div <- function(text){
+  return((length(unique(text))/length(text))*100)
+}
+
+words_ing <- ing %>%
+  unnest_tokens(word,text,token="regex")%>%
+  filter(str_detect(word,"^[a-z']+$"))
+
+words_ing_clean <- words_ing %>% filter(!word %in% stop_words$word,!str_detect(word,"t.co"),!str_detect(word,"https"))
+words_ing_clean_sent <- words_ing_clean %>% inner_join(nrc,by="word") %>% mutate(type="Obama Election Day")
+clean_sent <- bind_rows(words_ing_clean_sent,words_trump_clean_sent)
+clean_sent %>% group_by(type,sentiment) %>% summarise(n=n()) %>% mutate(n=n/sum(n)) %>%
+  ggplot(aes(x=type, y=n*100, fill=sentiment)) +
+  geom_bar(stat="identity", position="dodge")+theme_minimal()+ylab("%")+
+  ggtitle("Percentage Sentiment for each case")+theme(plot.title = element_text(hjust = 0.5))+
+  xlab("Tweets")+scale_fill_manual(values = c("#24576D", "#A113E2",
+                                              "#000000", "gray",
+                                              "#28AADC",
+                                              "#F2583F","#40cc49",
+                                              "#96503F","#ffc100","#918d58"))
+                                              
+  #############
+  End of File
+  ############
+                                      
+
