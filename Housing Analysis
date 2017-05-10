@@ -1,0 +1,112 @@
+##################
+# Team Sntimentalists
+##################
+Scatterplot Matrix Code
+#Scatterplot by Month
+Housing = Housing = read.csv("HomeSales.csv", header=TRUE)
+Housing
+myvars = c("Month","U.S.Condo","U.S.SF")
+Housing2 = Housing[myvars]
+Housing2
+plot(Housing2)
+result = lm(Month~U.S.Condo+U.S.SF, data = Housing)
+result
+summary(result)
+
+#Scatterplot by Year
+Housing = Housing = read.csv("totalSoldOverYears.csv", header=TRUE)
+Housing
+myvars = c("West","South","Northeast","Midwest")
+Housing2 = Housing[myvars]
+Housing2
+plot(Housing2)
+result = lm(West~South+Northeast,Midwest, data = Housing)
+result
+summary(result)
+
+# Line Graph showing Single Family Sales over years
+home<-read.csv("HomeSales2016.csv")
+plot(home$NortheastSF,type="l",lwd=1,
+     xaxt="n",ylim=c(500000,2500000),col="black",
+     xlab="Month",ylab="Number (Quantity)",
+     main="Number of Single Family Sales in US 2016")
+axis(1,at=1:length(home$Month),labels=home$Month)
+lines(home$WestSF,col="red",type="l",lwd=1)
+lines(home$MidwestSF,col="dark green",type="l",lwd=1)
+lines(home$SouthSF,col="purple",type="l",lwd=1)
+legend("topright",legend=c("Northeast Single Family","West Single Family","Midwest Single Family","South Single Family"),
+       lty=1,lwd=1,pch=21,col=c("black","red","dark green","purple"),
+       ncol=1,bty="n",cex=0.8,
+       text.col=c("black","red","dark green","purple"),
+       inset=0.01)
+
+# Line Graph showing Condo and Co-Op Sales over years
+home<-read.csv("HomeSales2016.csv")
+plot(Home$NortheastCondo,type="l",lwd=1,
+     xaxt="n",ylim=c(0,300),col="black",
+     xlab="Month",ylab="Number (thousands)",
+     main="Number of Condo Sales in US 2016")
+axis(1,at=1:length(Home$Month),labels=rain$Month)
+lines(Home$WestCondo,col="red",type="l",lwd=1)
+lines(Home$MidwestCondo,col="dark green",type="l",lwd=1)
+lines(Home$SouthCondo,col="purple",type="l",lwd=1)
+legend("topright",legend=c("NortheastCondo","WestCondo","MidwestCondo","SouthCondo"),
+       lty=1,lwd=1,pch=21,col=c("black","red","dark green","purple"),
+       ncol=1,bty="n",cex=0.8,
+       text.col=c("black","red","dark green","purple"),
+       inset=0.01)
+
+# Total Number of Home Sales in the US Year 2016
+rain<-read.csv("HomeSales2016.csv")
+plot(rain$Existing.Home.Sales,type="l",lwd=1,
+     xaxt="n",ylim=c(5000,6000),col="Black",
+     xlab="Month",ylab="Number (thousands)",
+     main="Total Number of Home Sales in the US Year 2016 ")
+axis(1,at=1:length(rain$Month),labels=rain$Month)
+abline(v=10,col="red",lty=2)
+abline(v=12,col="green",lty=2)
+
+#Total Condo Sales in 2016
+rain<-read.csv("HomeSales2016.csv")
+plot(rain$U.S.Condo,type="l",lwd=1,
+     xaxt="n",ylim=c(570,700),col="Black",
+     xlab="Month",ylab="Number (thousands)",
+     main="Total Number of Condo Sales in the US Year 2016 ")
+axis(1,at=1:length(rain$Month),labels=rain$Month)
+abline(v=10,col="red",lty=2)
+abline(v=12,col="green",lty=2)
+
+#Total Single Family Sales in 2016
+rain<-read.csv("HomeSales2016.csv")
+plot(rain$U.S.SF,type="l",lwd=1,
+     xaxt="n",ylim=c(4500,5500),col="Black",
+     xlab="Month",ylab="Number (thousands)",
+     main="Total Number of Single Family Sales in the US Year 2016 ")
+axis(1,at=1:length(rain$Month),labels=rain$Month)
+abline(v=10,col="red",lty=2)
+abline(v=12,col="green",lty=2)
+### Growth of US Economy accross US for 2012/2016
+getwd()
+setwd("C:/Users/dbegum/Desktop/Test")
+
+FinalData <- read.csv(file="FinalData_Geo.csv")
+FinalData
+library(ggplot2)
+library(maps)
+all_states <- map_data("state")
+map <- ggplot()
+map <- map + geom_polygon( data=all_states, aes(x=long, y=lat, group = group),colour="Yellow", fill="black" )
+map
+
+mydata <- read.csv("FinalData_Geo.csv", header=TRUE, sep=",")
+map <- ggplot()
+map <- map + geom_polygon( data=all_states, aes(x=long, y=lat, group = group),colour="red", fill="lightBlue" )
+map <- map + geom_point( data=mydata, aes(x=lng, y=lat, size = AvgY), color="coral1") + scale_size(name="")
+map <- map + geom_text( data=mydata, hjust=0.5, vjust=-0.5, aes(x=lng, y=lat, label =Top2014), colour="black", size=3 )
+map <- map + theme_bw()  + labs(fill = "" 
+                                ,title = "US Economy Growth Across States\n Year 2016", x="Longitude", y="Latitude")+
+  theme_solarized()+scale_colour_economist()
+map
+##############
+### END OF FILE
+#############
